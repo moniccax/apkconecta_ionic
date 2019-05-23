@@ -5,6 +5,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { IonicModule } from '@ionic/angular';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 import { TabsPage } from './tabs.page';
+import { ModalAddPostPage } from '../modal-add-post/modal-add-post.page';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { TabsPage } from './tabs.page';
     IonicModule,
 		TabsPageRoutingModule
   ],
-  declarations: [TabsPage]
+  declarations: [TabsPage, ModalAddPostPage],
+  entryComponents : [ModalAddPostPage],
 })
 export class TabsPageModule {}

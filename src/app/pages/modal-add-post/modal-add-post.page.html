@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Novo Post</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()" class="ios button button-clear ion-activatable ion-focusable hydrated">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-margin-top">
+      <ion-col>
+        <input type="file" class="post-img-input" id="post_img_input" multiple="true" (change)="showImgName()" />
+        <ion-button fill="outline" color="medium" class="post-img-button" (click)="clickInputFile()">
+          <ion-icon slot="start" name="image"></ion-icon>
+          Imagens
+        </ion-button>
+        <ion-textarea class="post-img-textarea" id="img_name"></ion-textarea>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Título</ion-label>
+          <ion-input type="text"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Conteúdo</ion-label>
+          <ion-textarea></ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Contexto
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-label>TIC</ion-label>
+          <ion-checkbox slot="start"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-label>Alice</ion-label>
+          <ion-checkbox slot="start"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Visibilidade
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-radio-group>
+            <ion-item lines="none">
+              <ion-label>Restrito ao contexto</ion-label>
+              <ion-radio slot="start" value="ctx" name="visibility"></ion-radio>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>Restrito à Fundação CEFETMINAS</ion-label>
+              <ion-radio slot="start" value="fcm" name="visibility"></ion-radio>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>Público</ion-label>
+              <ion-radio slot="start" value="public" name="visibility"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button class="send-btn" fill="outline" color="medium">Cancelar</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button class="send-btn" fill="outline">Enviar</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
