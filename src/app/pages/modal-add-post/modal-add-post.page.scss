@@ -1,0 +1,21 @@
+.send-btn {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 80px;
+}
+
+.post-img-input {
+    overflow: hidden;
+    opacity: 0;
+    height: 55px;
+}
+
+.post-img-button {
+    position: absolute;
+    top: 10px;
+}
+
+.post-img-textarea {
+    border-bottom: 1px solid lightgrey;
+}

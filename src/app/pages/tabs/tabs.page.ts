@@ -1,15 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { ModalAddPostPage } from './../modal-add-post/modal-add-post.page';
+import { Component } from '@angular/core';
+import { ModalController} from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
-  templateUrl: './tabs.page.html',
-  styleUrls: ['./tabs.page.scss'],
+  templateUrl: 'tabs.page.html',
+  styleUrls: ['tabs.page.scss']
 })
-export class TabsPage implements OnInit {
+export class TabsPage {
 
-  constructor() { }
+  constructor(private modalCrtl: ModalController) {}
 
-  ngOnInit() {
+  async openModal(){
+    let modal = await this.modalCrtl.create({
+      component : ModalAddPostPage
+    });
+
+    return await modal.present();
   }
-
 }
