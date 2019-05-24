@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Crop } from '@ionic-native/crop/ngx';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-profilepic',
@@ -14,7 +15,8 @@ export class ProfilepicPage implements OnInit {
 
 	constructor(private imagePicker: ImagePicker,
   private crop: Crop,
-  private transfer: FileTransfer) { }
+  private transfer: FileTransfer,
+	private storage:Storage) { }
 
 
   ngOnInit() {
@@ -31,18 +33,19 @@ export class ProfilepicPage implements OnInit {
               const fileTransfer: FileTransferObject = this.transfer.create();
               const uploadOpts: FileUploadOptions = {
                  fileKey: 'file',
-                 fileName: newImage.substr(newImage.lastIndexOf('/') + 1)
+                 fileName: newImage.substr(newImage.lastIndexOf('/') + 1),
+								 params: {token: this.storage.get('token')}
               };
 
-              /*fileTransfer.upload(newImage, 'http://192.168.0.7:3000/api/upload', uploadOpts)
+              fileTransfer.upload(newImage, 'https://api.fundacaocefetminas.org.br/atualizar_foto_perfil', uploadOpts)
                .then((data) => {
                  console.log(data);
-                 this.respData = JSON.parse(data.response);
-                 console.log(this.respData);
-                 this.fileUrl = this.respData.fileUrl;
+                 //this.respData = JSON.parse(data.response);
+                 //console.log(this.respData);
+                 //this.fileUrl = this.respData.fileUrl;
                }, (err) => {
                  console.log(err);
-               });*/
+               });
             },
             error => console.error('Error cropping image', error)
           );

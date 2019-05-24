@@ -1,7 +1,0 @@
-{
-  "name": "fcmconecta",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}

@@ -58,7 +58,7 @@ var ProfilepicPageModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ion-header>\n  <ion-toolbar>\n    <ion-title>\n      Ionic 4 Crop Upload\n    </ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content padding>\n  <ion-card>\n    <img *ngIf=\"!fileUrl\" src=\"https://conecta.fundacaocefetminas.org.br/static/profilepic/49767522.png\"/>\n    <img *ngIf=\"fileUrl\" src=\"{{fileUrl}}\"/>\n    <ion-card-content>\n      <ion-button color=\"medium\" size=\"large\" (click)=\"cropUpload()\">\n        <ion-icon slot=\"icon-only\" name=\"camera\"></ion-icon>\n      </ion-button>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n"
+module.exports = "<ion-header>\n  <ion-toolbar>\n    <ion-title>Profile Pic</ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content padding>\n  <ion-card>\n    <img *ngIf=\"!fileUrl\" src=\"https://conecta.fundacaocefetminas.org.br/static/profilepic/49767522.png\"/>\n    <img *ngIf=\"fileUrl\" src=\"{{fileUrl}}\"/>\n    <ion-card-content>\n      <ion-button color=\"medium\" size=\"large\" (click)=\"cropUpload()\">\n        <ion-icon slot=\"icon-only\" name=\"camera\"></ion-icon>\n      </ion-button>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n"
 
 /***/ }),
 
@@ -88,16 +88,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ionic_native_crop_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic-native/crop/ngx */ "./node_modules/@ionic-native/crop/ngx/index.js");
 /* harmony import */ var _ionic_native_image_picker_ngx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @ionic-native/image-picker/ngx */ "./node_modules/@ionic-native/image-picker/ngx/index.js");
 /* harmony import */ var _ionic_native_file_transfer_ngx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ionic-native/file-transfer/ngx */ "./node_modules/@ionic-native/file-transfer/ngx/index.js");
+/* harmony import */ var _ionic_storage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ionic/storage */ "./node_modules/@ionic/storage/fesm5/ionic-storage.js");
+
 
 
 
 
 
 var ProfilepicPage = /** @class */ (function () {
-    function ProfilepicPage(imagePicker, crop, transfer) {
+    function ProfilepicPage(imagePicker, crop, transfer, storage) {
         this.imagePicker = imagePicker;
         this.crop = crop;
         this.transfer = transfer;
+        this.storage = storage;
         this.fileUrl = null;
     }
     ProfilepicPage.prototype.ngOnInit = function () {
@@ -113,17 +116,18 @@ var ProfilepicPage = /** @class */ (function () {
                     var fileTransfer = _this.transfer.create();
                     var uploadOpts = {
                         fileKey: 'file',
-                        fileName: newImage.substr(newImage.lastIndexOf('/') + 1)
+                        fileName: newImage.substr(newImage.lastIndexOf('/') + 1),
+                        params: { token: _this.storage.get('token') }
                     };
-                    /*fileTransfer.upload(newImage, 'http://192.168.0.7:3000/api/upload', uploadOpts)
-                     .then((data) => {
-                       console.log(data);
-                       this.respData = JSON.parse(data.response);
-                       console.log(this.respData);
-                       this.fileUrl = this.respData.fileUrl;
-                     }, (err) => {
-                       console.log(err);
-                     });*/
+                    fileTransfer.upload(newImage, 'https://api.fundacaocefetminas.org.br/atualizar_foto_perfil', uploadOpts)
+                        .then(function (data) {
+                        console.log(data);
+                        //this.respData = JSON.parse(data.response);
+                        //console.log(this.respData);
+                        //this.fileUrl = this.respData.fileUrl;
+                    }, function (err) {
+                        console.log(err);
+                    });
                 }, function (error) { return console.error('Error cropping image', error); });
             }
         }, function (err) { console.log(err); });
@@ -136,7 +140,8 @@ var ProfilepicPage = /** @class */ (function () {
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ionic_native_image_picker_ngx__WEBPACK_IMPORTED_MODULE_3__["ImagePicker"],
             _ionic_native_crop_ngx__WEBPACK_IMPORTED_MODULE_2__["Crop"],
-            _ionic_native_file_transfer_ngx__WEBPACK_IMPORTED_MODULE_4__["FileTransfer"]])
+            _ionic_native_file_transfer_ngx__WEBPACK_IMPORTED_MODULE_4__["FileTransfer"],
+            _ionic_storage__WEBPACK_IMPORTED_MODULE_5__["Storage"]])
     ], ProfilepicPage);
     return ProfilepicPage;
 }());
