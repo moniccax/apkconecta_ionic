@@ -4,8 +4,7 @@ import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'menu', pathMatch: 'full' },
-  { path: 'menu', loadChildren: './pages/menu/menu.module#MenuPageModule' },
-  { path: 'profilepic', loadChildren: './pages/profilepic/profilepic.module#ProfilepicPageModule' }
+  { path: 'menu', loadChildren: './pages/menu/menu.module#MenuPageModule' }
 ];
 
 @NgModule({

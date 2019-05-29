@@ -14,6 +14,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -24,7 +25,8 @@ import { FileTransfer } from '@ionic-native/file-transfer/ngx';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 		ImagePicker,
 		Crop,
-		FileTransfer
+		FileTransfer,
+		File
   ],
   bootstrap: [AppComponent]
 })
