@@ -7,6 +7,7 @@ import { File, FileEntry } from '@ionic-native/file/ngx';
 import { ToastController,LoadingController } from '@ionic/angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
 
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -26,11 +27,12 @@ export class ProfilePage implements OnInit {
 	private loadingController: LoadingController,
 	private http: Http) { }
 
-
-
   ngOnInit() {
-		updateProfilePic();
   }
+
+	ionViewWillEnter() {
+		this.updateProfilePic();
+	}
 
 	cropUpload() {
   this.imagePicker.getPictures({ maximumImagesCount: 1, outputType: 0 }).then((results) => {
@@ -97,6 +99,7 @@ readFile(file: any) {
 				console.log('API Response : ', response.json());
 				if(response.json().success){
 					this.presentToast('File upload complete.')
+					this.updateProfilePic();
 				}
 				else{
 					this.presentToast('File upload failed on server.')
