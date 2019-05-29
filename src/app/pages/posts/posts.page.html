@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-			<ion-img cache="true" src="/assets/images/logo_fcm.png" height="5px" width="5px" class="logo-position"></ion-img>
+    <ion-img cache="true" src="/assets/images/logo_fcm.png" height="5px" width="5px" class="logo-position"></ion-img>
   </ion-toolbar>
 </ion-header>
 
@@ -51,9 +51,9 @@
       <ion-col>
         <ion-card>
           <ion-card-header class="ion-no-padding">
-            <ion-item class="item-border">
+            <ion-item lines="none">
               <ion-avatar slot="start">
-                <img src="https://conecta.fundacaocefetminas.org.br/static/profilepic/default.png">
+                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/profilepic/default.png"></ion-img>
               </ion-avatar>
               <ion-label>
                 <p>Alice Costa</p>
@@ -64,7 +64,41 @@
             </ion-item>
           </ion-card-header>
           <ion-card-content class="ion-no-padding">
-            <img src="https://conecta.fundacaocefetminas.org.br/static/post_images/84917835.jpg" class="image-width">
+            <ion-img src="https://conecta.fundacaocefetminas.org.br/static/post_images/84917835.jpg"></ion-img>
+            <ion-card-title class="title-padding">Card Title</ion-card-title>
+            <div class="text-padding">
+              Keep close to Nature's heart... and break clear away, once in awhile, and climb a mountain or spend a week
+              in the woods. Wash your spirit clean.
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header class="ion-no-padding">
+            <ion-item lines="none">
+              <ion-avatar slot="start">
+                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/profilepic/default.png"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <p>Alice Costa</p>
+                <p>16/05/2019 11:13</p>
+              </ion-label>
+              <ion-icon name="eye-off" class="ion-margin-end"></ion-icon>
+              <ion-badge>T</ion-badge>
+            </ion-item>
+          </ion-card-header>
+          <ion-card-content class="ion-no-padding">
+            <ion-slides pager="true" [options]="sliderConfig">
+              <ion-slide>
+                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/post_images/37319321.jpg"></ion-img>
+              </ion-slide>
+              <ion-slide>
+                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/post_images/19544623.jpg"></ion-img>
+              </ion-slide>
+            </ion-slides>
             <ion-card-title class="title-padding">Card Title</ion-card-title>
             <div class="text-padding">
               Keep close to Nature's heart... and break clear away, once in awhile, and climb a mountain or spend a week

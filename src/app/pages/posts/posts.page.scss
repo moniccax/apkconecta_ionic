@@ -6,15 +6,6 @@
 	height:100%;
 }
 
-.item-border {
-  --border-style: none;
-}
-
-.image-width {
-  width: 100%;
-  overflow: hidden;
-}
-
 .title-padding {
   padding-top: 5%;
   padding-left: 2%;
@@ -37,8 +28,8 @@
 }
 
 .context-border {
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgray;
 }
 
 .context-position {
@@ -57,9 +48,4 @@
   .scroll {
     overflow: auto;
   }
-}
-
-.footer-option {
-  width: 33.33%;
-  display: inline-block;
 }

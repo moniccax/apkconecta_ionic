@@ -7,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PostsPage implements OnInit {
 
+  sliderConfig = {
+    autoHeight: true
+  };
+
   constructor() { }
 
   ngOnInit() {
