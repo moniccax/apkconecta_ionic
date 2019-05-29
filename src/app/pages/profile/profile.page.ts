@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import { File, FileEntry } from '@ionic-native/file/ngx';
 import { ToastController,LoadingController } from '@ionic/angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
-
+import { ChangeDetectorRef } from '@angular/core'
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +25,8 @@ export class ProfilePage implements OnInit {
 	private file: File,
 	private toastController: ToastController,
 	private loadingController: LoadingController,
-	private http: Http) { }
+	private http: Http,
+	private changeRef: ChangeDetectorRef) { }
 
   ngOnInit() {
   }
@@ -128,10 +129,12 @@ readFile(file: any) {
 				.toPromise()
 				.then((response) =>{
 					if(response.json().success){
-						this.profilepicpath=response.json().profilepicpath;
+						this.profilepicpath=response.json().profilepicpath+"?"+new Date().getTime();
+						this.changeRef.detectChanges();
 					}
 					else{
 						this.profilepicpath="/static/profilepic/default.png";
+						this.changeRef.detectChanges();
 					}
 				})
 				.catch((error) =>
