@@ -9,6 +9,9 @@
 
 <ion-content>
   <ion-grid>
+
+    <!-- Menu - Contextos -->
+
     <ion-row class="ion-margin-top ion-margin-bottom">
       <ion-col>
         <ion-button href="#" fill="clear">
@@ -20,33 +23,18 @@
     <ion-row class="ion-margin-top ion-margin-bottom">
       <div class="container context-border">
         <div class="scroll" scrollX="true">
-          <div class="context-position">
-            <ion-button href="#" class="context-button">
-              T
+          <div class="context-position" *ngFor="let ctx of contexts">
+            <ion-button href="#" class="context-button" style="--background:{{ctx.color}}">
+                {{ctx.name[0]}}
             </ion-button>
-            <p class="ion-text-center">TIC</p>
-          </div>
-          <div class="context-position">
-            <ion-button href="#" class="context-button">
-              C
-            </ion-button>
-            <p class="ion-text-center">Comunidados</p>
-          </div>
-          <div class="context-position">
-            <ion-button href="#" class="context-button">
-              A
-            </ion-button>
-            <p class="ion-text-center">Alice</p>
-          </div>
-          <div class="context-position">
-            <ion-button href="#" class="context-button">
-              D
-            </ion-button>
-            <p class="ion-text-center">Daniel</p>
+            <p class="ion-text-center">{{ctx.name}}</p>
           </div>
         </div>
       </div>
     </ion-row>
+
+    <!-- Post Card -->
+
     <ion-row>
       <ion-col>
         <ion-card>
@@ -74,6 +62,9 @@
         </ion-card>
       </ion-col>
     </ion-row>
+
+    <!-- Post Card with Slider -->
+
     <ion-row>
       <ion-col>
         <ion-card>
@@ -108,5 +99,6 @@
         </ion-card>
       </ion-col>
     </ion-row>
+
   </ion-grid>
 </ion-content>
