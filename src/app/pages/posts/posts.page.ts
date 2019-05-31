@@ -13,19 +13,21 @@ export class PostsPage implements OnInit {
   sliderConfig = {
     autoHeight: true
   };
-
+  load: boolean;
+  posts: any;
   contexts: any;
 
-  constructor(private storage: Storage, private http: Http) { }
-
-  ngOnInit() {
-  }
+  constructor(private storage: Storage, private http: Http) {
+    this.load=false;
+   }
 
   ionViewWillEnter() {
-		this.showContexts();
-	}
+    this.showPosts();
+  }
 
-  showContexts() {
+  ngOnInit() { }
+
+  showPosts() {
     this.storage.get('token').then(token => {
       if (token) {
         let data = { 'token': token };
@@ -38,9 +40,11 @@ export class PostsPage implements OnInit {
           .toPromise()
           .then((response) => {
             if (response.json().success) {
-              this.contexts=response.json().contexts
-              console.log("success");    
-            }else{
+              this.posts = response.json().posts;
+              this.contexts = response.json().contexts;
+              this.load=true;
+              console.log("success");
+            } else {
               console.log("fail");
             }
           })

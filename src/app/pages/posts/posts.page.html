@@ -24,8 +24,8 @@
       <div class="container context-border">
         <div class="scroll" scrollX="true">
           <div class="context-position" *ngFor="let ctx of contexts">
-            <ion-button href="#" class="context-button" style="--background:{{ctx.color}}">
-                {{ctx.name[0]}}
+            <ion-button href="#" class="context-button" [ngStyle]="{'background':ctx.color}">
+              {{ctx.name[0]}}
             </ion-button>
             <p class="ion-text-center">{{ctx.name}}</p>
           </div>
@@ -35,28 +35,31 @@
 
     <!-- Post Card -->
 
-    <ion-row>
+    <ion-row *ngFor="let post of posts">
       <ion-col>
         <ion-card>
           <ion-card-header class="ion-no-padding">
             <ion-item lines="none">
               <ion-avatar slot="start">
-                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/profilepic/default.png"></ion-img>
+                <ion-img src="https://api.fundacaocefetminas.org.br/{{post.author_profilepic}}"></ion-img>
               </ion-avatar>
               <ion-label>
-                <p>Alice Costa</p>
-                <p>16/05/2019 11:13</p>
+                <p>{{post.author.split(' ')[0]}}</p>
+                <p>{{post.date}}</p>
               </ion-label>
               <ion-icon name="eye-off" class="ion-margin-end"></ion-icon>
               <ion-badge>T</ion-badge>
             </ion-item>
           </ion-card-header>
           <ion-card-content class="ion-no-padding">
-            <ion-img src="https://conecta.fundacaocefetminas.org.br/static/post_images/84917835.jpg"></ion-img>
-            <ion-card-title class="title-padding">Card Title</ion-card-title>
+            <ion-slides pager="true" [options]="sliderConfig">
+              <ion-slide *ngFor="let img of post.images">
+                <ion-img src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
+              </ion-slide>
+            </ion-slides>
+            <ion-card-title class="title-padding">{{post.title}}</ion-card-title>
             <div class="text-padding">
-              Keep close to Nature's heart... and break clear away, once in awhile, and climb a mountain or spend a week
-              in the woods. Wash your spirit clean.
+              {{post.text}}
             </div>
           </ion-card-content>
         </ion-card>
