@@ -52,7 +52,7 @@
             </ion-item>
           </ion-card-header>
           <ion-card-content class="ion-no-padding">
-            <ion-slides pager="true" [options]="sliderConfig">
+            <ion-slides *ngIf="post.images.length>0" pager="true" [options]="sliderConfig">
               <ion-slide *ngFor="let img of post.images">
                 <ion-img src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
               </ion-slide>
