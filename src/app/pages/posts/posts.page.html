@@ -34,7 +34,7 @@
     </ion-row>
 
     <!-- Post Card -->
-
+		<div *ngIf="load">
     <ion-row *ngFor="let post of posts">
       <ion-col>
         <ion-card>
@@ -65,7 +65,7 @@
         </ion-card>
       </ion-col>
     </ion-row>
-
+		</div>
     <!-- Post Card with Slider -->
 
     <ion-row>
