@@ -34,74 +34,41 @@
     </ion-row>
 
     <!-- Post Card -->
-		<div *ngIf="load">
-    <ion-row *ngFor="let post of posts">
-      <ion-col>
-        <ion-card>
-          <ion-card-header class="ion-no-padding">
-            <ion-item lines="none">
-              <ion-avatar slot="start">
-                <ion-img src="https://api.fundacaocefetminas.org.br/{{post.author_profilepic}}"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <p>{{post.author.split(' ')[0]}}</p>
-                <p>{{post.date}}</p>
-              </ion-label>
-              <ion-icon name="eye-off" class="ion-margin-end"></ion-icon>
-              <ion-badge>T</ion-badge>
-            </ion-item>
-          </ion-card-header>
-          <ion-card-content class="ion-no-padding">
-            <ion-slides *ngIf="post.images.length>0" pager="true" [options]="sliderConfig">
-              <ion-slide *ngFor="let img of post.images">
-                <ion-img src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
-              </ion-slide>
-            </ion-slides>
-            <ion-card-title class="title-padding">{{post.title}}</ion-card-title>
-            <div class="text-padding">
-              {{post.text}}
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-		</div>
-    <!-- Post Card with Slider -->
-
-    <ion-row>
-      <ion-col>
-        <ion-card>
-          <ion-card-header class="ion-no-padding">
-            <ion-item lines="none">
-              <ion-avatar slot="start">
-                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/profilepic/default.png"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <p>Alice Costa</p>
-                <p>16/05/2019 11:13</p>
-              </ion-label>
-              <ion-icon name="eye-off" class="ion-margin-end"></ion-icon>
-              <ion-badge>T</ion-badge>
-            </ion-item>
-          </ion-card-header>
-          <ion-card-content class="ion-no-padding">
-            <ion-slides pager="true" [options]="sliderConfig">
-              <ion-slide>
-                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/post_images/37319321.jpg"></ion-img>
-              </ion-slide>
-              <ion-slide>
-                <ion-img src="https://conecta.fundacaocefetminas.org.br/static/post_images/19544623.jpg"></ion-img>
-              </ion-slide>
-            </ion-slides>
-            <ion-card-title class="title-padding">Card Title</ion-card-title>
-            <div class="text-padding">
-              Keep close to Nature's heart... and break clear away, once in awhile, and climb a mountain or spend a week
-              in the woods. Wash your spirit clean.
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
+    <div *ngIf="load">
+      <ion-row *ngFor="let post of posts">
+        <ion-col>
+          <ion-card>
+            <ion-card-header class="ion-no-padding">
+              <ion-item lines="none">
+                <ion-avatar slot="start">
+                  <ion-img src="https://api.fundacaocefetminas.org.br/{{post.author_profilepic}}"></ion-img>
+                </ion-avatar>
+                <ion-label>
+                  <p>{{post.author.split(' ')[0]}}</p>
+                  <p>
+                    <ion-datetime class="post-date" display-format="DD/MM/YYYY HH:mm" value="{{post.date}}"></ion-datetime>
+                  </p>
+                </ion-label>
+                <ion-icon *ngIf="post.visibility==1 || post.visibility==2" name="eye-off" class="ion-margin-end"></ion-icon>
+                <ion-icon *ngIf="post.visibility==3" name="eye" class="ion-margin-end"></ion-icon>
+                <ion-badge *ngFor="let ctx of post.contexts" [ngStyle]="{'background':ctx.color}">{{ctx.name[0]}}</ion-badge>
+              </ion-item>
+            </ion-card-header>
+            <ion-card-content class="ion-no-padding">
+              <ion-slides *ngIf="post.images.length>0" pager="true" [options]="sliderConfig">
+                <ion-slide *ngFor="let img of post.images">
+                  <ion-img src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
+                </ion-slide>
+              </ion-slides>
+              <ion-card-title class="title-padding">{{post.title}}</ion-card-title>
+              <div class="text-padding">
+                {{post.text}}
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </div>
 
   </ion-grid>
 </ion-content>
