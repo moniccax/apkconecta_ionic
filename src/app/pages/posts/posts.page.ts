@@ -18,8 +18,8 @@ export class PostsPage implements OnInit {
   contexts: any;
 
   constructor(private storage: Storage, private http: Http) {
-    this.load=false;
-   }
+    this.load = false;
+  }
 
   ionViewWillEnter() {
     this.showPosts();
@@ -42,7 +42,7 @@ export class PostsPage implements OnInit {
             if (response.json().success) {
               this.posts = response.json().posts;
               this.contexts = response.json().contexts;
-              this.load=true;
+              this.load = true;
               console.log("success");
             } else {
               console.log("fail");

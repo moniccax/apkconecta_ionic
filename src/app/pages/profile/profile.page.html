@@ -7,20 +7,51 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-	<ion-card>
-  <ion-card-header>
-    <ion-card-title>Foto de perfil</ion-card-title>
-  </ion-card-header>
+<ion-content *ngIf="load">
+	<ion-grid>
+		<ion-row color="primary" justify-content-center>
+			<ion-col align-self-center size-md="6" size-lg="7" size-xs="12">
+				<ion-card padding>
+			  <ion-card-header>
+			    <ion-card-title>Foto de perfil</ion-card-title>
+			  </ion-card-header>
 
-  <ion-card-content>
-		<ion-img cache="true" src="https://api.fundacaocefetminas.org.br/{{profilepicpath}}"></ion-img>
-		<ion-card-content>
-      <ion-button color="medium" size="large" (click)="cropUpload()">
-        <ion-icon slot="icon-only" name="camera"></ion-icon>
-      </ion-button>
-    </ion-card-content>
-  </ion-card-content>
-</ion-card>
+			  <ion-card-content>
+					<ion-img cache="true" src="https://api.fundacaocefetminas.org.br/{{profile.profilepicpath}}"></ion-img>
+					<ion-card-content>
+			      <ion-button color="medium" size="large" (click)="cropUpload()">
+			        <ion-icon slot="icon-only" name="camera"></ion-icon>
+			      </ion-button>
+			    </ion-card-content>
+			  </ion-card-content>
+			</ion-card>
+
+			<ion-card>
+			<ion-card-header>
+				<ion-card-title>Editar perfil</ion-card-title>
+			</ion-card-header>
+
+			<ion-card-content>
+				<form [formGroup]="editProfileForm" #form="ngForm" (ngSubmit)="submitEditProfile(form)">
+				<ion-item>
+					<ion-label position="floating">Nome:</ion-label>
+					<ion-input formControlName="name" name="name" type="text"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label position="floating">CPF:</ion-label>
+					<ion-input formControlName="cpf" name="cpf" type="text" [brmasker]="{form: editProfileForm.get('cpf'), mask: '999.999.999-99'}"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label position="floating">Email:</ion-label>
+					<ion-input formControlName="email" name="email" type="email" required></ion-input>
+				</ion-item>
+				<ion-button type="submit" [disabled]="!editProfileForm.valid" expand="block">Enviar <ion-icon slot="end" name="arrow-round-forward"></ion-icon> </ion-button>
+				</form>
+			</ion-card-content>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+	</ion-grid>
+
 
 </ion-content>

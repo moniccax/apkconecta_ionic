@@ -48,7 +48,7 @@ export class AuthenticationService {
 
 	async presentSuccessToast(name) {
 		const toast = await this.toastController.create({
-			message: 'Bem vindo '+name.split(' ')[0]+"!",
+			message: 'Bem vindo(a) '+name.split(' ')[0]+"!",
 			duration: 2000,
 			color: 'success'
 		});
