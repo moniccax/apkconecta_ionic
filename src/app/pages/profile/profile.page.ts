@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { File, FileEntry } from '@ionic-native/file/ngx';
 import { ToastController,LoadingController } from '@ionic/angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import {FormBuilder, FormGroup, FormControl,Validators} from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core'
 
 @Component({
@@ -16,9 +17,31 @@ import { ChangeDetectorRef } from '@angular/core'
 export class ProfilePage implements OnInit {
 	fileUrl: any = null;
 	respData: any;
-	profilepicpath: any;
+	load: boolean;
+	profile :{
+		profilepicpath: any,
+		name: any,
+		cpf: any,
+		email: any
+	};
+
+	editProfileForm: FormGroup;
+
+	error_messages = {
+		'cpf':[
+			{type:'required',message:'CPF é necessário.'},
+			{type:'minlength',message:'CPF inválido.'}
+		],
+		'nome':[
+			{type:'required',message:'Nome é necessário.'}
+		],
+		'email':[
+			{type:'required',message:'Email é necessário.'}
+		],
+	}
 
 	constructor(private imagePicker: ImagePicker,
+	private formBuilder: FormBuilder,
   private crop: Crop,
   private transfer: FileTransfer,
 	private storage:Storage,
@@ -26,13 +49,30 @@ export class ProfilePage implements OnInit {
 	private toastController: ToastController,
 	private loadingController: LoadingController,
 	private http: Http,
-	private changeRef: ChangeDetectorRef) { }
+	private changeRef: ChangeDetectorRef) {
+		this.load = false;
+		this.editProfileForm = this.formBuilder.group({
+			cpf:new FormControl({value: '', disabled: true},Validators.compose([Validators.required,Validators.minLength(14)])),
+			name:new FormControl({value: '', disabled: true},Validators.compose([Validators.required])),
+			email:new FormControl('',Validators.compose([Validators.required]))
+		});
+	}
 
   ngOnInit() {
   }
 
 	ionViewWillEnter() {
+		this.profile={
+			profilepicpath:"",
+			name:"",
+			cpf:"",
+			email:""
+		};
 		this.updateProfilePic();
+	}
+
+	submitEditProfile(){
+		let data ={'cpf': this.editProfileForm.value.cpf, 'name': this.editProfileForm.value.name, 'email': this.editProfileForm.value.email};
 	}
 
 	cropUpload() {
@@ -129,11 +169,19 @@ readFile(file: any) {
 				.toPromise()
 				.then((response) =>{
 					if(response.json().success){
-						this.profilepicpath=response.json().profilepicpath+"?"+new Date().getTime();
+						console.log(response.json())
+						this.profile.name=response.json().name;
+						this.editProfileForm.controls['name'].setValue(this.profile.name);
+						this.profile.cpf=response.json().cpf;
+						this.editProfileForm.controls['cpf'].setValue(this.profile.cpf);
+						this.profile.email=response.json().email;
+						this.editProfileForm.controls['email'].setValue(this.profile.email);
+						this.profile.profilepicpath=response.json().profilepicpath+"?"+new Date().getTime();
+						this.load=true;
 						this.changeRef.detectChanges();
 					}
 					else{
-						this.profilepicpath="/static/profilepic/default.png";
+						this.profile.profilepicpath="/static/profilepic/default.png";
 						this.changeRef.detectChanges();
 					}
 				})
