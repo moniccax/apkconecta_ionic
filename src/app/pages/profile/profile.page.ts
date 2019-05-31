@@ -27,6 +27,8 @@ export class ProfilePage implements OnInit {
 
 	editProfileForm: FormGroup;
 
+	changePassword: FormGroup;
+
 	error_messages = {
 		'cpf':[
 			{type:'required',message:'CPF é necessário.'},
@@ -56,6 +58,11 @@ export class ProfilePage implements OnInit {
 			name:new FormControl({value: '', disabled: true},Validators.compose([Validators.required])),
 			email:new FormControl('',Validators.compose([Validators.required]))
 		});
+		this.changePassword = this.formBuilder.group({
+			password:new FormControl('',Validators.compose([Validators.required])),
+			newPassword:new FormControl('',Validators.compose([Validators.required])),
+			confirmNewPassword:new FormControl('',Validators.compose([Validators.required]))
+		});
 	}
 
   ngOnInit() {
@@ -72,7 +79,13 @@ export class ProfilePage implements OnInit {
 	}
 
 	submitEditProfile(){
-		let data ={'cpf': this.editProfileForm.value.cpf, 'name': this.editProfileForm.value.name, 'email': this.editProfileForm.value.email};
+		let data ={'cpf': this.editProfileForm.getRawValue().cpf, 'name': this.editProfileForm.getRawValue().name, 'email': this.editProfileForm.value.email};
+		console.log(data);
+	}
+
+	submitChangePassword(){
+		let data ={'password': this.changePassword.value.password, 'newPassword': this.changePassword.value.newPassword, 'confirmNewPassword': this.changePassword.value.confirmNewPassword};
+		console.log(data);
 	}
 
 	cropUpload() {

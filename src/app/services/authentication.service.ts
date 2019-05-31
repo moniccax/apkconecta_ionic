@@ -12,6 +12,8 @@ const TOKEN_KEY = 'token';
   providedIn: 'root'
 })
 export class AuthenticationService {
+	cpf: any;
+	password: any;
 
   authenticationState = new BehaviorSubject(false);
 
@@ -27,23 +29,29 @@ export class AuthenticationService {
   }
 
   checkToken() {
-    this.storage.get(TOKEN_KEY).then(res => {
-      if (res) {
-        this.authenticationState.next(true);
-      }
-			else{
-				this.storage.get('cpf').then(resCpf => {
-					if(resCpf){
-						this.storage.get('password').then(resPassword => {
-							if(resPassword){
-
-							}
-						})
-					}
-				})
-			}
-			this.authenticationState.next(false);
-    })
+		return new Promise((resolve, reject) => {
+			this.storage.get('cpf').then(res => {
+						if (res) {
+							this.cpf=res;
+							this.storage.get('password').then(resPassword => {
+								if(resPassword){
+									this.password=resPassword;
+									let data ={'cpf':this.cpf, 'password': this.password};
+									this.login(data);
+									resolve('success');
+								}
+								else{
+									this.authenticationState.next(false);
+									reject(new Error("login failed"));
+								}
+							});
+						}
+						else{
+							this.authenticationState.next(false);
+							reject(new Error("login failed"));
+						}
+					});
+		});
   }
 
 	async presentSuccessToast(name) {

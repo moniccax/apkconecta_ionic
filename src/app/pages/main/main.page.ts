@@ -3,7 +3,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import {FormBuilder, FormGroup, FormControl,Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { Events } from '@ionic/angular';
+import { Events, LoadingController } from '@ionic/angular';
 import { AuthenticationService } from './../../services/authentication.service';
 
 
@@ -30,7 +30,8 @@ export class MainPage implements OnInit {
 		 private router: Router,
 		 private storage: Storage,
 		 private events:Events,
-	 	 private authService: AuthenticationService){
+	 	 private authService: AuthenticationService,
+	 	 private loadingController: LoadingController){
 		this.loginForm = this.formBuilder.group({
 			cpf:new FormControl('',Validators.compose([Validators.required,Validators.minLength(14)])),
 			password:new FormControl('',Validators.compose([Validators.required]))
@@ -44,7 +45,16 @@ export class MainPage implements OnInit {
 		this.authService.login(data);
 	}
 
-	ngOnInit(){
-
+	async ngOnInit(){
+		const loading = await this.loadingController.create({
+				message: 'Carregando...',
+		});
+		await loading.present();
+		this.authService.checkToken().then(res => {
+			loading.dismiss();
+		}).catch((error) =>
+		{
+			loading.dismiss();
+		});
 	}
 }

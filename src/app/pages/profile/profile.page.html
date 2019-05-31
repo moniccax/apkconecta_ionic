@@ -33,19 +33,43 @@
 
 			<ion-card-content>
 				<form [formGroup]="editProfileForm" #form="ngForm" (ngSubmit)="submitEditProfile(form)">
-				<ion-item>
+				<ion-item padding>
 					<ion-label position="floating">Nome:</ion-label>
 					<ion-input formControlName="name" name="name" type="text"></ion-input>
 				</ion-item>
-				<ion-item>
+				<ion-item padding>
 					<ion-label position="floating">CPF:</ion-label>
 					<ion-input formControlName="cpf" name="cpf" type="text" [brmasker]="{form: editProfileForm.get('cpf'), mask: '999.999.999-99'}"></ion-input>
 				</ion-item>
-				<ion-item>
+				<ion-item padding>
 					<ion-label position="floating">Email:</ion-label>
 					<ion-input formControlName="email" name="email" type="email" required></ion-input>
 				</ion-item>
-				<ion-button type="submit" [disabled]="!editProfileForm.valid" expand="block">Enviar <ion-icon slot="end" name="arrow-round-forward"></ion-icon> </ion-button>
+				<ion-button padding type="submit" [disabled]="!editProfileForm.valid" expand="block">Enviar <ion-icon slot="end" name="arrow-round-forward"></ion-icon> </ion-button>
+				</form>
+			</ion-card-content>
+			</ion-card>
+
+			<ion-card>
+			<ion-card-header>
+				<ion-card-title>Alterar senha</ion-card-title>
+			</ion-card-header>
+
+			<ion-card-content>
+				<form [formGroup]="changePassword" #form="ngForm" (ngSubmit)="submitChangePassword(form)">
+				<ion-item padding>
+					<ion-label position="floating">Senha:</ion-label>
+					<ion-input formControlName="password" name="password" type="password"></ion-input>
+				</ion-item>
+				<ion-item padding>
+					<ion-label position="floating">Nova senha:</ion-label>
+					<ion-input formControlName="newPassword" name="newPassword" type="password"></ion-input>
+				</ion-item>
+				<ion-item padding>
+					<ion-label position="floating">Confirme a nova senha:</ion-label>
+					<ion-input formControlName="confirmNewPassword" name="confirmNewPassword" type="password" required></ion-input>
+				</ion-item>
+					<ion-button padding type="submit" [disabled]="!changePassword.valid" expand="block">Enviar <ion-icon slot="end" name="arrow-round-forward"></ion-icon> </ion-button>
 				</form>
 			</ion-card-content>
 			</ion-card>
