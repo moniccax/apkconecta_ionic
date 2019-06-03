@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { AuthenticationService } from './../../services/authentication.service';
 
 @Component({
   selector: 'app-posts',
@@ -17,7 +18,7 @@ export class PostsPage implements OnInit {
   posts: any;
   contexts: any;
 
-  constructor(private storage: Storage, private http: Http) {
+  constructor(private storage: Storage, private http: Http, private authService: AuthenticationService) {
     this.load = false;
   }
 
@@ -43,9 +44,9 @@ export class PostsPage implements OnInit {
               this.posts = response.json().posts;
               this.contexts = response.json().contexts;
               this.load = true;
-              console.log("success");
             } else {
-              console.log("fail");
+              this.authService.checkToken();
+              this.showPosts();
             }
           })
       }
