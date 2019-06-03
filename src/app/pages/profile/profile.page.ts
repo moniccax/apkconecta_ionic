@@ -8,6 +8,7 @@ import { ToastController,LoadingController } from '@ionic/angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import {FormBuilder, FormGroup, FormControl,Validators} from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core'
+import { AuthenticationService } from './../../services/authentication.service';
 
 @Component({
   selector: 'app-profile',
@@ -40,6 +41,21 @@ export class ProfilePage implements OnInit {
 		'email':[
 			{type:'required',message:'Email é necessário.'}
 		],
+		'password':[
+			{type:'required',message:'Senha é necessário.'},
+		],
+		'newPassword':[
+			{type:'required',message:'Nova senha é necessário.'}
+		],
+		'confirmNewPassword':[
+			{type:'required',message:'Confirmação da nova senha é necessário.'}
+		],
+	}
+
+	checkPasswords(group: FormGroup) { // here we have the 'passwords' group
+		let pass = group.controls.newPassword.value;
+		let confirmPass = group.controls.confirmNewPassword.value;
+		return pass === confirmPass ? null : { notSame: true };
 	}
 
 	constructor(private imagePicker: ImagePicker,
@@ -51,18 +67,20 @@ export class ProfilePage implements OnInit {
 	private toastController: ToastController,
 	private loadingController: LoadingController,
 	private http: Http,
-	private changeRef: ChangeDetectorRef) {
+	private changeRef: ChangeDetectorRef,
+	private authService: AuthenticationService) {
 		this.load = false;
 		this.editProfileForm = this.formBuilder.group({
 			cpf:new FormControl({value: '', disabled: true},Validators.compose([Validators.required,Validators.minLength(14)])),
 			name:new FormControl({value: '', disabled: true},Validators.compose([Validators.required])),
 			email:new FormControl('',Validators.compose([Validators.required]))
 		});
+
 		this.changePassword = this.formBuilder.group({
 			password:new FormControl('',Validators.compose([Validators.required])),
 			newPassword:new FormControl('',Validators.compose([Validators.required])),
 			confirmNewPassword:new FormControl('',Validators.compose([Validators.required]))
-		});
+		}, {validator: this.checkPasswords });
 	}
 
   ngOnInit() {
@@ -194,7 +212,12 @@ readFile(file: any) {
 						this.changeRef.detectChanges();
 					}
 					else{
-						this.updateProfilePic();
+						this.authService.reload_token().then(res => {
+							this.updateProfilePic();
+						}).catch((error) =>
+						{
+						});
+
 					}
 				})
 				.catch((error) =>
