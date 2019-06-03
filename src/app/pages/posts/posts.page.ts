@@ -12,8 +12,9 @@ import { AuthenticationService } from './../../services/authentication.service';
 export class PostsPage implements OnInit {
 
   sliderConfig = {
-    autoHeight: true
+    autoHeight: true,
   };
+
   load: boolean;
   posts: any;
   contexts: any;
@@ -23,7 +24,9 @@ export class PostsPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.showPosts();
+    if (!this.load) {
+      this.showPosts();
+    }
   }
 
   ngOnInit() { }
@@ -47,9 +50,8 @@ export class PostsPage implements OnInit {
             } else {
               this.authService.reload_token().then(res => {
                 this.showPosts();
-              }).catch((error) =>
-              {
-              });  
+              }).catch((error) => {
+              });
             }
           })
       }

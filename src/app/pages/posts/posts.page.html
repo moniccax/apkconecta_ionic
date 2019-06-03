@@ -44,7 +44,7 @@
                 <ion-img src="https://api.fundacaocefetminas.org.br/{{post.author_profilepic}}"></ion-img>
               </ion-avatar>
               <ion-label>
-                <p>{{post.author.split(' ')[0]}}</p>
+                <p>{{post.author.split(' ')[0]}} {{post.author.split(' ')[post.author.split(' ').length-1]}}</p>
                 <p>
                   <ion-datetime class="post-date" display-format="DD/MM/YYYY HH:mm" value="{{post.date}}">
                   </ion-datetime>
@@ -59,16 +59,16 @@
           </ion-card-header>
           <ion-card-content class="ion-no-padding">
             <!-- Post com 1 imagem -->
-            <ion-img *ngIf="post.images.length==1" src="https://api.fundacaocefetminas.org.br/{{post.images[0]}}"></ion-img>
+            <ion-img *ngIf="post.images.length==1" cache="true" src="https://api.fundacaocefetminas.org.br/{{post.images[0]}}"></ion-img>
             <!-- Post com 2 ou mais imagens -->
-            <ion-slides *ngIf="post.images.length>1" pager="true" [options]="sliderConfig">
+            <ion-slides *ngIf="post.images.length>1" pager="true" [options]="sliderConfig" style="min-height: 150px">
               <ion-slide *ngFor="let img of post.images">
-                <ion-img src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
+                <ion-img cache="true" src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
               </ion-slide>
             </ion-slides>
             <ion-card-title class="title-padding">{{post.title}}</ion-card-title>
             <div class="text-padding">
-              {{post.text}}
+              {{post.text | slice:0:150}}{{post.text.length >= 150 ? '...' : ''}}
             </div>
           </ion-card-content>
         </ion-card>
