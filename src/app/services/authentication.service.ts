@@ -37,7 +37,7 @@ export class AuthenticationService {
 								if(resPassword){
 									this.password=resPassword;
 									let data ={'cpf':this.cpf, 'password': this.password};
-									this.login(data);
+									this.relogin(data);
 									resolve('success');
 								}
 								else{
@@ -79,6 +79,40 @@ export class AuthenticationService {
 			color: 'danger'
 		});
 		toast.present();
+	}
+
+	relogin(data){
+		let headers = new Headers(
+		{
+			'Content-Type' : 'application/json'
+		});
+		let options = new RequestOptions({ headers: headers });
+		this.http.post('https://api.fundacaocefetminas.org.br/login', data, options)
+		.toPromise()
+		.then((response) =>
+		{
+			console.log('API Response : ', response.json());
+			if(response.json().success){
+				console.log('Token : ', response.json().token);
+				this.storage.set('cpf', data.cpf);
+				this.storage.set('password', data.password);
+				this.storage.set('name', response.json().nome);
+				this.storage.set('token', response.json().token);
+				this.storage.set('logged', true);
+				this.storage.set(TOKEN_KEY,response.json().token).then(() => {
+					this.authenticationState.next(true);
+				});
+			}
+			else{
+				this.presentFailedToast()
+			}
+		})
+		.catch((error) =>
+		{
+			console.error('API Error : ', error.status);
+			console.error('API Error : ', JSON.stringify(error));
+			this.presentErrorToast();
+		});
 	}
 
   login(data) {

@@ -194,8 +194,7 @@ readFile(file: any) {
 						this.changeRef.detectChanges();
 					}
 					else{
-						this.profile.profilepicpath="/static/profilepic/default.png";
-						this.changeRef.detectChanges();
+						updateProfilePic();
 					}
 				})
 				.catch((error) =>
