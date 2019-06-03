@@ -42,16 +42,10 @@
         Contexto
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngFor="let ctx of contexts">
       <ion-col>
         <ion-item lines="none">
-          <ion-label>TIC</ion-label>
-          <ion-checkbox slot="start"></ion-checkbox>
-        </ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-item lines="none">
-          <ion-label>Alice</ion-label>
+          <ion-label>{{ctx.name}}</ion-label>
           <ion-checkbox slot="start"></ion-checkbox>
         </ion-item>
       </ion-col>
