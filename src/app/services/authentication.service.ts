@@ -37,7 +37,7 @@ export class AuthenticationService {
 								if(resPassword){
 									this.password=resPassword;
 									let data ={'cpf':this.cpf, 'password': this.password};
-									this.relogin(data);
+									this.login(data);
 									resolve('success');
 								}
 								else{
@@ -81,6 +81,31 @@ export class AuthenticationService {
 		toast.present();
 	}
 
+	reload_token(){
+		return new Promise((resolve, reject) => {
+			this.storage.get('cpf').then(res => {
+						if (res) {
+							this.cpf=res;
+							this.storage.get('password').then(resPassword => {
+								if(resPassword){
+									this.password=resPassword;
+									let data ={'cpf':this.cpf, 'password': this.password};
+									this.relogin(data);
+									resolve('success');
+								}
+								else{
+									this.authenticationState.next(false);
+									reject(new Error("login failed"));
+								}
+							});
+						}
+						else{
+							this.authenticationState.next(false);
+							reject(new Error("login failed"));
+						}
+					});
+		});
+	}
 	relogin(data){
 		let headers = new Headers(
 		{
