@@ -58,3 +58,8 @@
   --padding-end: 0;
   --padding-start: 0;
 }
+
+.swiper-wrapper {
+  height: auto !important;
+  will-change: height;
+}

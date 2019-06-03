@@ -45,8 +45,11 @@ export class PostsPage implements OnInit {
               this.contexts = response.json().contexts;
               this.load = true;
             } else {
-              this.authService.checkToken();
-              this.showPosts();
+              this.authService.reload_token().then(res => {
+                this.showPosts();
+              }).catch((error) =>
+              {
+              });  
             }
           })
       }

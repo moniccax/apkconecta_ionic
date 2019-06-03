@@ -194,7 +194,7 @@ readFile(file: any) {
 						this.changeRef.detectChanges();
 					}
 					else{
-						updateProfilePic();
+						this.updateProfilePic();
 					}
 				})
 				.catch((error) =>
