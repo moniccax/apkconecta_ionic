@@ -62,7 +62,7 @@
 					<ion-input formControlName="password" name="password" type="password"></ion-input>
 				</ion-item>
 				<ng-container *ngFor="let error of error_messages.password">
-					<div class="error-messages" *ngIf="loginForm.get('password').hasError(error.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+					<div class="error-messages" *ngIf="changePassword.get('password').hasError(error.type) && (changePassword.get('password').dirty || changePassword.get('password').touched)">
 						{{error.message}}
 					</div>
 				</ng-container>
@@ -70,17 +70,22 @@
 					<ion-label position="floating">Nova senha:</ion-label>
 					<ion-input formControlName="newPassword" name="newPassword" type="password"></ion-input>
 				</ion-item>
+				<ng-container *ngFor="let error of error_messages.newPassword">
+					<div class="error-messages" *ngIf="changePassword.get('newPassword').hasError(error.type) && (changePassword.get('newPassword').dirty || changePassword.get('newPassword').touched)">
+						{{error.message}}
+					</div>
+				</ng-container>
 				<ion-item padding>
 					<ion-label position="floating">Confirme a nova senha:</ion-label>
 					<ion-input formControlName="confirmNewPassword" name="confirmNewPassword" type="password" required></ion-input>
 				</ion-item>
-				<ng-container *ngIf="loginForm.hasError('notSame')"">
-					<div class="error-messages" *ngIf="(loginForm.get('confirmNewPassword').dirty || loginForm.get('confirmNewPassword').touched)">
+				<ng-container *ngIf="changePassword.hasError('notSame')">
+					<div class="error-messages" *ngIf="(changePassword.get('confirmNewPassword').dirty || changePassword.get('confirmNewPassword').touched)">
 						As senhas não coincidem.
 					</div>
 				</ng-container>
 				<ng-container *ngFor="let error of error_messages.confirmNewPassword">
-					<div class="error-messages" *ngIf="loginForm.get('confirmNewPassword').hasError(error.type) && (loginForm.get('confirmNewPassword').dirty || loginForm.get('confirmNewPassword').touched)">
+					<div class="error-messages" *ngIf="changePassword.get('confirmNewPassword').hasError(error.type) && (changePassword.get('confirmNewPassword').dirty || changePassword.get('confirmNewPassword').touched)">
 						{{error.message}}
 					</div>
 				</ng-container>

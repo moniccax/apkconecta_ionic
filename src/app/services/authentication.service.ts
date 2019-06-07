@@ -90,8 +90,9 @@ export class AuthenticationService {
 								if(resPassword){
 									this.password=resPassword;
 									let data ={'cpf':this.cpf, 'password': this.password};
-									this.relogin(data);
-									resolve('success');
+									this.relogin(data).then(res =>{
+										resolve('success');
+									});
 								}
 								else{
 									this.authenticationState.next(false);
@@ -106,37 +107,40 @@ export class AuthenticationService {
 					});
 		});
 	}
+
 	relogin(data){
-		let headers = new Headers(
-		{
-			'Content-Type' : 'application/json'
-		});
-		let options = new RequestOptions({ headers: headers });
-		this.http.post('https://api.fundacaocefetminas.org.br/login', data, options)
-		.toPromise()
-		.then((response) =>
-		{
-			console.log('API Response : ', response.json());
-			if(response.json().success){
-				console.log('Token : ', response.json().token);
-				this.storage.set('cpf', data.cpf);
-				this.storage.set('password', data.password);
-				this.storage.set('name', response.json().nome);
-				this.storage.set('token', response.json().token);
-				this.storage.set('logged', true);
-				this.storage.set(TOKEN_KEY,response.json().token).then(() => {
-					this.authenticationState.next(true);
-				});
-			}
-			else{
-				this.presentFailedToast()
-			}
-		})
-		.catch((error) =>
-		{
-			console.error('API Error : ', error.status);
-			console.error('API Error : ', JSON.stringify(error));
-			this.presentErrorToast();
+		return new Promise((resolve, reject) => {
+			let headers = new Headers(
+			{
+				'Content-Type' : 'application/json'
+			});
+			let options = new RequestOptions({ headers: headers });
+			this.http.post('https://api.fundacaocefetminas.org.br/login', data, options)
+			.toPromise()
+			.then((response) =>
+			{
+				console.log('API Response : ', response.json());
+				if(response.json().success){
+					console.log('Token : ', response.json().token);
+					this.storage.set('cpf', data.cpf);
+					this.storage.set('password', data.password);
+					this.storage.set('name', response.json().nome);
+					this.storage.set('logged', true);
+					this.storage.set(TOKEN_KEY,response.json().token).then(() => {
+						this.authenticationState.next(true);
+						resolve('success');
+					});
+				}
+				else{
+					reject(new Error("login failed"));
+				}
+			})
+			.catch((error) =>
+			{
+				console.error('API Error : ', error.status);
+				console.error('API Error : ', JSON.stringify(error));
+				reject(new Error("login failed"));
+			});
 		});
 	}
 
@@ -156,7 +160,6 @@ export class AuthenticationService {
 				this.storage.set('cpf', data.cpf);
 				this.storage.set('password', data.password);
 				this.storage.set('name', response.json().nome);
-				this.storage.set('token', response.json().token);
 				this.storage.set('logged', true);
 				this.presentSuccessToast(response.json().nome);
 				this.storage.set(TOKEN_KEY,response.json().token).then(() => {

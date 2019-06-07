@@ -9,6 +9,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import {FormBuilder, FormGroup, FormControl,Validators} from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core'
 import { AuthenticationService } from './../../services/authentication.service';
+import { FormsubmitService } from './../../services/formsubmit.service';
 
 @Component({
   selector: 'app-profile',
@@ -68,7 +69,8 @@ export class ProfilePage implements OnInit {
 	private loadingController: LoadingController,
 	private http: Http,
 	private changeRef: ChangeDetectorRef,
-	private authService: AuthenticationService) {
+	private authService: AuthenticationService,
+	private formService: FormsubmitService) {
 		this.load = false;
 		this.editProfileForm = this.formBuilder.group({
 			cpf:new FormControl({value: '', disabled: true},Validators.compose([Validators.required,Validators.minLength(14)])),
@@ -96,14 +98,71 @@ export class ProfilePage implements OnInit {
 		this.updateProfilePic();
 	}
 
+	async presentToast(message,color) {
+		const toast = await this.toastController.create({
+			message: message,
+			duration: 2000,
+			color: color
+		});
+		toast.present();
+	}
+
 	submitEditProfile(){
 		let data ={'cpf': this.editProfileForm.getRawValue().cpf, 'name': this.editProfileForm.getRawValue().name, 'email': this.editProfileForm.value.email};
 		console.log(data);
 	}
 
 	submitChangePassword(){
-		let data ={'password': this.changePassword.value.password, 'newPassword': this.changePassword.value.newPassword, 'confirmNewPassword': this.changePassword.value.confirmNewPassword};
-		console.log(data);
+		let data=this.changePassword.value;
+		this.storage.get('token').then((val) => {
+			data.token= val;
+			console.log(data);
+			this.formService.formSubmit('https://api.fundacaocefetminas.org.br/updatePassword',data).then(
+				(response) =>{
+					this.presentToast(response,"success");
+				},(error) =>{
+						this.presentToast(error.message,"danger");
+				});
+		});
+	}
+
+	changePasswordSubmit(data){
+		let headers = new Headers(
+		{
+			'Content-Type' : 'application/json'
+		});
+		let options = new RequestOptions({ headers: headers });
+		this.http.post('https://api.fundacaocefetminas.org.br/updatePassword', data, options)
+		.toPromise()
+		.then((response) =>
+		{
+			console.log('API Response : ', response.json());
+			if(response.json().logged){
+				if(response.json().success){
+					this.presentToast("Senha alterada com sucesso", "success");
+				}
+				else{
+					this.presentToast(response.json().message, "danger");
+				}
+			}
+			else{
+				this.authService.reload_token().then(res => {
+					this.storage.get('token').then((val) => {
+						data.token= val;
+						this.changePasswordSubmit(data);
+					});
+				}).catch((error) =>
+				{
+					this.authService.logout();
+				});
+			}
+		})
+		.catch((error) =>
+		{
+			console.error('API Error : ', error.status);
+			console.error('API Error : ', JSON.stringify(error));
+			this.presentToast("Erro ao alterar a senha!", "danger");
+		});
 	}
 
 	cropUpload() {
@@ -122,22 +181,13 @@ export class ProfilePage implements OnInit {
   }, (err) => { console.log(err); });
 	}
 
-	async presentToast(text) {
-		const toast = await this.toastController.create({
-				message: text,
-				position: 'bottom',
-				duration: 3000
-		});
-		toast.present();
-	}
-
 	startUpload(imgEntry) {
 	    this.file.resolveLocalFilesystemUrl(imgEntry)
 	        .then(entry => {
 	            ( < FileEntry > entry).file(file => this.readFile(file))
 	        })
 	        .catch(err => {
-	            this.presentToast('Error while reading file.');
+	            this.presentToast('Error while reading file.', 'danger');
 	        });
 	}
 
@@ -170,11 +220,11 @@ readFile(file: any) {
 				loading.dismiss();
 				console.log('API Response : ', response.json());
 				if(response.json().success){
-					this.presentToast('File upload complete.')
+					this.presentToast('File upload complete.','success')
 					this.updateProfilePic();
 				}
 				else{
-					this.presentToast('File upload failed on server.')
+					this.presentToast('File upload failed on server.','danger')
 				}
 			})
 			.catch((error) =>
@@ -182,11 +232,11 @@ readFile(file: any) {
 				loading.dismiss();
 				console.error('API Error : ', error.status);
 				console.error('API Error : ', JSON.stringify(error));
-				this.presentToast('File upload failed.')
+				this.presentToast('File upload failed.','danger')
 			});
 	}
 
-	updateProfilePic(){
+	async updateProfilePic(){
 		this.storage.get('token').then(token => {
 			if(token){
 				let data ={'token': token};
@@ -199,8 +249,8 @@ readFile(file: any) {
 				this.http.post('https://api.fundacaocefetminas.org.br/getProfileInfo', data, options)
 				.toPromise()
 				.then((response) =>{
-					if(response.json().success){
-						console.log(response.json())
+					console.log(response.json());
+					if(response.json().success==true){
 						this.profile.name=response.json().name;
 						this.editProfileForm.controls['name'].setValue(this.profile.name);
 						this.profile.cpf=response.json().cpf;
@@ -216,6 +266,7 @@ readFile(file: any) {
 							this.updateProfilePic();
 						}).catch((error) =>
 						{
+							this.authService.logout();
 						});
 
 					}
