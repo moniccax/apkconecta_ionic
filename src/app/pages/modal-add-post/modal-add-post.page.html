@@ -10,84 +10,58 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row class="ion-margin-top">
-      <ion-col>
-        <input type="file" class="post-img-input" id="post_img_input" multiple="true" (change)="showImgName()" />
-        <ion-button fill="outline" color="medium" class="post-img-button" (click)="clickInputFile()">
-          <ion-icon slot="start" name="image"></ion-icon>
-          Imagens
-        </ion-button>
-        <ion-textarea class="post-img-textarea" id="img_name"></ion-textarea>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-item>
-          <ion-label position="floating">Título</ion-label>
-          <ion-input type="text"></ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-item>
-          <ion-label position="floating">Conteúdo</ion-label>
-          <ion-textarea></ion-textarea>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        Contexto
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-item lines="none">
-          <ion-label>TIC</ion-label>
-          <ion-checkbox slot="start"></ion-checkbox>
-        </ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-item lines="none">
-          <ion-label>Alice</ion-label>
-          <ion-checkbox slot="start"></ion-checkbox>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        Visibilidade
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-list>
-          <ion-radio-group>
-            <ion-item lines="none">
-              <ion-label>Restrito ao contexto</ion-label>
-              <ion-radio slot="start" value="ctx" name="visibility"></ion-radio>
-            </ion-item>
-            <ion-item lines="none">
-              <ion-label>Restrito à Fundação CEFETMINAS</ion-label>
-              <ion-radio slot="start" value="fcm" name="visibility"></ion-radio>
-            </ion-item>
-            <ion-item lines="none">
-              <ion-label>Público</ion-label>
-              <ion-radio slot="start" value="public" name="visibility"></ion-radio>
-            </ion-item>
-          </ion-radio-group>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button class="send-btn" fill="outline" color="medium">Cancelar</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button class="send-btn" fill="outline">Enviar</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <form [formGroup]="addPostForm" #form="ngForm" (ngSubmit)="submitAddPost(form)">
+    <!-- Imagens -->
+    <ion-item lines="none" class="ion-margin-top">
+      <input type="file" formControlName="post_images" name="post_images" id="post_images" class="post-img-input"
+        multiple="true" (change)="showImgName()" />
+      <ion-button fill="outline" color="medium" class="post-img-button" (click)="clickInputFile()">
+        <ion-icon slot="start" name="image"></ion-icon>
+        Imagens
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-textarea id="img_name"></ion-textarea>
+    </ion-item>
+    <!-- Título -->
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input formControlName="post_title" name="post_title" type="text"></ion-input>
+    </ion-item>
+    <!-- Texto -->
+    <ion-item>
+      <ion-label position="floating">Conteúdo</ion-label>
+      <ion-textarea formControlName="post_text" name="post_text"></ion-textarea>
+    </ion-item>
+    <!-- Contextos -->
+    <ion-item lines="none">
+      Contextos
+    </ion-item>
+    <ion-item lines="none" *ngFor="let ctx of contexts">
+      <ion-label>{{ctx.name}}</ion-label>
+      <ion-checkbox slot="start" name="post_ctx_{{ctx.name}}"></ion-checkbox>
+    </ion-item>
+    <!-- Visibilidade -->
+    <ion-item lines="none" class="ion-margin-top">
+      Visibilidade
+    </ion-item>
+    <ion-radio-group>
+      <ion-item lines="none">
+        <ion-label>Restrito ao contexto</ion-label>
+        <ion-radio slot="start" value="1" formControlName="post_visibility" name="post_visibility"></ion-radio>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>Restrito à Fundação CEFETMINAS</ion-label>
+        <ion-radio slot="start" value="2" formControlName="post_visibility" name="post_visibility"></ion-radio>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>Público</ion-label>
+        <ion-radio slot="start" value="3" formControlName="post_visibility" name="post_visibility"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+    <!-- Enviar -->
+    <ion-button padding type="submit" expand="block">Enviar
+      <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+    </ion-button>
+  </form>
 </ion-content>

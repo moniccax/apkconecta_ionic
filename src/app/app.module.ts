@@ -15,6 +15,7 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File, FileEntry } from '@ionic-native/file/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -23,11 +24,11 @@ import { File, FileEntry } from '@ionic-native/file/ngx';
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-		ImagePicker,
-		Crop,
-		FileTransfer,
-		File
+    ImagePicker,
+    Crop,
+    FileTransfer,
+    File
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

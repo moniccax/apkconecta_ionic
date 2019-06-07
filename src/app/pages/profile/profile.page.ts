@@ -4,23 +4,23 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { Storage } from '@ionic/storage';
 import { File, FileEntry } from '@ionic-native/file/ngx';
-import { ToastController,LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import {FormBuilder, FormGroup, FormControl,Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core'
 import { AuthenticationService } from './../../services/authentication.service';
 import { FormsubmitService } from './../../services/formsubmit.service';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.page.html',
-  styleUrls: ['./profile.page.scss'],
+	selector: 'app-profile',
+	templateUrl: './profile.page.html',
+	styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
 	fileUrl: any = null;
 	respData: any;
 	load: boolean;
-	profile :{
+	profile: {
 		profilepicpath: any,
 		name: any,
 		cpf: any,
@@ -32,24 +32,24 @@ export class ProfilePage implements OnInit {
 	changePassword: FormGroup;
 
 	error_messages = {
-		'cpf':[
-			{type:'required',message:'CPF é necessário.'},
-			{type:'minlength',message:'CPF inválido.'}
+		'cpf': [
+			{ type: 'required', message: 'CPF é necessário.' },
+			{ type: 'minlength', message: 'CPF inválido.' }
 		],
-		'nome':[
-			{type:'required',message:'Nome é necessário.'}
+		'nome': [
+			{ type: 'required', message: 'Nome é necessário.' }
 		],
-		'email':[
-			{type:'required',message:'Email é necessário.'}
+		'email': [
+			{ type: 'required', message: 'Email é necessário.' }
 		],
-		'password':[
-			{type:'required',message:'Senha é necessário.'},
+		'password': [
+			{ type: 'required', message: 'Senha é necessário.' },
 		],
-		'newPassword':[
-			{type:'required',message:'Nova senha é necessário.'}
+		'newPassword': [
+			{ type: 'required', message: 'Nova senha é necessário.' }
 		],
-		'confirmNewPassword':[
-			{type:'required',message:'Confirmação da nova senha é necessário.'}
+		'confirmNewPassword': [
+			{ type: 'required', message: 'Confirmação da nova senha é necessário.' }
 		],
 	}
 
@@ -73,27 +73,27 @@ export class ProfilePage implements OnInit {
 	private formService: FormsubmitService) {
 		this.load = false;
 		this.editProfileForm = this.formBuilder.group({
-			cpf:new FormControl({value: '', disabled: true},Validators.compose([Validators.required,Validators.minLength(14)])),
-			name:new FormControl({value: '', disabled: true},Validators.compose([Validators.required])),
-			email:new FormControl('',Validators.compose([Validators.required]))
+			cpf: new FormControl({ value: '', disabled: true }, Validators.compose([Validators.required, Validators.minLength(14)])),
+			name: new FormControl({ value: '', disabled: true }, Validators.compose([Validators.required])),
+			email: new FormControl('', Validators.compose([Validators.required]))
 		});
 
 		this.changePassword = this.formBuilder.group({
-			password:new FormControl('',Validators.compose([Validators.required])),
-			newPassword:new FormControl('',Validators.compose([Validators.required])),
-			confirmNewPassword:new FormControl('',Validators.compose([Validators.required]))
-		}, {validator: this.checkPasswords });
+			password: new FormControl('', Validators.compose([Validators.required])),
+			newPassword: new FormControl('', Validators.compose([Validators.required])),
+			confirmNewPassword: new FormControl('', Validators.compose([Validators.required]))
+		}, { validator: this.checkPasswords });
 	}
 
-  ngOnInit() {
-  }
+	ngOnInit() {
+	}
 
 	ionViewWillEnter() {
-		this.profile={
-			profilepicpath:"",
-			name:"",
-			cpf:"",
-			email:""
+		this.profile = {
+			profilepicpath: "",
+			name: "",
+			cpf: "",
+			email: ""
 		};
 		this.updateProfilePic();
 	}
@@ -166,19 +166,19 @@ export class ProfilePage implements OnInit {
 	}
 
 	cropUpload() {
-  this.imagePicker.getPictures({ maximumImagesCount: 1, outputType: 0 }).then((results) => {
-    for (let i = 0; i < results.length; i++) {
-        console.log('Image URI: ' + results[i]);
-        this.crop.crop(results[i], { quality: 100 })
-          .then(
-            newImage => {
-              console.log('new image path is: ' + newImage);
+		this.imagePicker.getPictures({ maximumImagesCount: 1, outputType: 0 }).then((results) => {
+			for (let i = 0; i < results.length; i++) {
+				console.log('Image URI: ' + results[i]);
+				this.crop.crop(results[i], { quality: 100 })
+					.then(
+						newImage => {
+							console.log('new image path is: ' + newImage);
 							this.startUpload(newImage);
-            },
-            error => console.error('Error cropping image', error)
-          );
-    }
-  }, (err) => { console.log(err); });
+						},
+						error => console.error('Error cropping image', error)
+					);
+			}
+		}, (err) => { console.log(err); });
 	}
 
 	startUpload(imgEntry) {
@@ -191,32 +191,31 @@ export class ProfilePage implements OnInit {
 	        });
 	}
 
-readFile(file: any) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        const formData = new FormData();
-        const imgBlob = new Blob([reader.result], {
-            type: file.type
-        });
-				this.storage.get('token').then((val) => {
-					formData.append('file', imgBlob, "profile.png");
-					formData.append('token', val);
-	        this.uploadImageData(formData);
-			  });
-    };
-    reader.readAsArrayBuffer(file);
-}
+	readFile(file: any) {
+		const reader = new FileReader();
+		reader.onloadend = () => {
+			const formData = new FormData();
+			const imgBlob = new Blob([reader.result], {
+				type: file.type
+			});
+			this.storage.get('token').then((val) => {
+				formData.append('file', imgBlob, "profile.png");
+				formData.append('token', val);
+				this.uploadImageData(formData);
+			});
+		};
+		reader.readAsArrayBuffer(file);
+	}
 
 	async uploadImageData(formData: FormData) {
-	    const loading = await this.loadingController.create({
-	        message: 'Uploading image...',
-	    });
-	    await loading.present();
+		const loading = await this.loadingController.create({
+			message: 'Uploading image...',
+		});
+		await loading.present();
 
-	    this.http.post("https://api.fundacaocefetminas.org.br/updateProfilePic", formData)
+		this.http.post("https://api.fundacaocefetminas.org.br/updateProfilePic", formData)
 			.toPromise()
-			.then((response) =>
-			{
+			.then((response) => {
 				loading.dismiss();
 				console.log('API Response : ', response.json());
 				if(response.json().success){
@@ -227,8 +226,7 @@ readFile(file: any) {
 					this.presentToast('File upload failed on server.','danger')
 				}
 			})
-			.catch((error) =>
-			{
+			.catch((error) => {
 				loading.dismiss();
 				console.error('API Error : ', error.status);
 				console.error('API Error : ', JSON.stringify(error));
@@ -238,13 +236,13 @@ readFile(file: any) {
 
 	async updateProfilePic(){
 		this.storage.get('token').then(token => {
-			if(token){
-				let data ={'token': token};
+			if (token) {
+				let data = { 'token': token };
 				console.log(data)
 				let headers = new Headers(
-				{
-					'Content-Type' : 'application/json'
-				});
+					{
+						'Content-Type': 'application/json'
+					});
 				let options = new RequestOptions({ headers: headers });
 				this.http.post('https://api.fundacaocefetminas.org.br/getProfileInfo', data, options)
 				.toPromise()
