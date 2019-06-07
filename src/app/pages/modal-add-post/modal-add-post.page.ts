@@ -25,9 +25,11 @@ export class ModalAddPostPage implements OnInit {
   ) {
     this.addPostForm = this.formBuilder.group({
       post_images: new FormControl(),
-      post_title: new FormControl('', Validators.compose([Validators.required])),
+      post_title: new FormControl(),
       post_text: new FormControl(),
-      post_visibility: new FormControl('', Validators.compose([Validators.required]))
+      post_visibility_1: new FormControl(),
+      post_visibility_2: new FormControl(),
+      post_visibility_3: new FormControl()
     });
   }
 
@@ -68,6 +70,10 @@ export class ModalAddPostPage implements OnInit {
           .then((response) => {
             if (response.json().success) {
               this.contexts = response.json().contexts;
+              for (let i = 0; i < this.contexts.length; i++) {
+                let ctx = this.contexts[i].name;
+                this.addPostForm.addControl('post_ctx_' + ctx, new FormControl());
+              }
             } else {
               console.log("Fail");
             }
@@ -77,7 +83,7 @@ export class ModalAddPostPage implements OnInit {
   }
 
   submitAddPost() {
-    let data = { 'post_images': this.addPostForm.getRawValue().post_images, 'post_title': this.addPostForm.getRawValue().post_title, 'post_text': this.addPostForm.getRawValue().post_text, 'post_visibility': this.addPostForm.getRawValue().post_visibility };
+    let data = this.addPostForm.getRawValue();
     console.log(data);
   }
 
