@@ -34,6 +34,10 @@ const routes: Routes = [
         {
           path: '',
           redirectTo: '/menu/tabs/posts'
+        },
+				{
+          path: 'posts/:id',
+          redirectTo: '/menu/posts/:id'
         }
       ]
   }

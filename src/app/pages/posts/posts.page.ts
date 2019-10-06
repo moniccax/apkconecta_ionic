@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { FormsubmitService } from './../../services/formsubmit.service';
 import { AuthenticationService } from './../../services/authentication.service';
 
 @Component({
@@ -15,18 +15,14 @@ export class PostsPage implements OnInit {
     autoHeight: true,
   };
 
-  load: boolean;
   posts: any;
   contexts: any;
 
-  constructor(private storage: Storage, private http: Http, private authService: AuthenticationService) {
-    this.load = false;
+  constructor(private storage: Storage, private formService: FormsubmitService, private authService: AuthenticationService) {
   }
 
   ionViewWillEnter() {
-    if (!this.load) {
-      this.showPosts();
-    }
+    this.showPosts();
   }
 
   ngOnInit() { }
@@ -34,28 +30,19 @@ export class PostsPage implements OnInit {
   showPosts() {
     this.storage.get('token').then(token => {
       if (token) {
-        let data = { 'token': token };
-        let headers = new Headers(
-          {
-            'Content-Type': 'application/json'
-          });
-        let options = new RequestOptions({ headers: headers });
-        this.http.post('https://api.fundacaocefetminas.org.br/getPosts', data, options)
-          .toPromise()
-          .then((response) => {
-            if (response.json().success) {
-              this.posts = response.json().posts;
-              this.contexts = response.json().contexts;
-              this.load = true;
-            } else {
-              this.authService.reload_token().then(res => {
-                this.showPosts();
-              }).catch((error) => {
-              });
+        const data = {'token': token };
+        this.formService.postSubmit('https://api.fundacaocefetminas.org.br/getPosts', data).subscribe(
+          res => {
+            if (res['success']) {
+              this.posts = res['posts'];
+              this.contexts = res['contexts'];
             }
-          })
-      }
-    })
-  }
+          },
+          err => {
 
+          }
+        );
+      }
+    });
+  }
 }

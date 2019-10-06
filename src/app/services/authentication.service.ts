@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Events } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { SubmitService } from './submit.service';
 const TOKEN_KEY = 'token';
 
 @Injectable({
@@ -14,46 +15,16 @@ const TOKEN_KEY = 'token';
 export class AuthenticationService {
 	cpf: any;
 	password: any;
-
   authenticationState = new BehaviorSubject(false);
 
   constructor(public http: Http,
 		private storage: Storage,
-		private plt: Platform,
 		private events: Events,
 		private toastController: ToastController,
-		private router: Router) {
-    this.plt.ready().then(() => {
-      this.checkToken();
-    });
+		private router: Router,
+		private submitService: SubmitService) {
   }
-
-  checkToken() {
-		return new Promise((resolve, reject) => {
-			this.storage.get('cpf').then(res => {
-						if (res) {
-							this.cpf=res;
-							this.storage.get('password').then(resPassword => {
-								if(resPassword){
-									this.password=resPassword;
-									let data ={'cpf':this.cpf, 'password': this.password};
-									this.login(data);
-									resolve('success');
-								}
-								else{
-									this.authenticationState.next(false);
-									reject(new Error("login failed"));
-								}
-							});
-						}
-						else{
-							this.authenticationState.next(false);
-							reject(new Error("login failed"));
-						}
-					});
-		});
-  }
-
+	
 	async presentSuccessToast(name) {
 		const toast = await this.toastController.create({
 			message: 'Bem vindo(a) '+name.split(' ')[0]+"!",
@@ -84,100 +55,62 @@ export class AuthenticationService {
 	reload_token(){
 		return new Promise((resolve, reject) => {
 			this.storage.get('cpf').then(res => {
-						if (res) {
-							this.cpf=res;
-							this.storage.get('password').then(resPassword => {
-								if(resPassword){
-									this.password=resPassword;
-									let data ={'cpf':this.cpf, 'password': this.password};
-									this.relogin(data).then(res =>{
-										resolve('success');
-									});
-								}
-								else{
-									this.authenticationState.next(false);
-									reject(new Error("login failed"));
-								}
-							});
+				if (res) {
+					this.cpf=res;
+					this.storage.get('password').then(resPassword => {
+						if(resPassword){
+							this.password=resPassword;
+							let credentials ={'cpf':this.cpf, 'password': this.password};
+							this.submitService.postSubmit('https://api.fundacaocefetminas.org.br/login', credentials).subscribe(res => {
+								this.saveCredentials(credentials,res).then(() => {
+									this.authenticationState.next(true);
+									this.events.publish('login');
+									resolve(res.token);
+								});
+					    });
 						}
 						else{
 							this.authenticationState.next(false);
 							reject(new Error("login failed"));
 						}
 					});
+				}
+				else{
+					this.authenticationState.next(false);
+					reject(new Error("login failed"));
+				}
+			});
 		});
 	}
 
-	relogin(data){
-		return new Promise((resolve, reject) => {
-			let headers = new Headers(
-			{
-				'Content-Type' : 'application/json'
-			});
-			let options = new RequestOptions({ headers: headers });
-			this.http.post('https://api.fundacaocefetminas.org.br/login', data, options)
-			.toPromise()
-			.then((response) =>
-			{
-				console.log('API Response : ', response.json());
-				if(response.json().success){
-					console.log('Token : ', response.json().token);
-					this.storage.set('cpf', data.cpf);
-					this.storage.set('password', data.password);
-					this.storage.set('name', response.json().nome);
-					this.storage.set('logged', true);
-					this.storage.set(TOKEN_KEY,response.json().token).then(() => {
-						this.authenticationState.next(true);
-						resolve('success');
-					});
-				}
-				else{
-					reject(new Error("login failed"));
-				}
-			})
-			.catch((error) =>
-			{
-				console.error('API Error : ', error.status);
-				console.error('API Error : ', JSON.stringify(error));
-				reject(new Error("login failed"));
-			});
-		});
+	saveCredentials(data,res){
+		let promises=[];
+		promises.push(this.storage.set('cpf', data.cpf));
+		promises.push(this.storage.set('password', data.password));
+		promises.push(this.storage.set('name', res.nome));
+		promises.push(this.storage.set(TOKEN_KEY,res.token));
+		return Promise.all(promises);
 	}
 
   login(data) {
-		let headers = new Headers(
-		{
-			'Content-Type' : 'application/json'
-		});
-		let options = new RequestOptions({ headers: headers });
-		this.http.post('https://api.fundacaocefetminas.org.br/login', data, options)
-		.toPromise()
-		.then((response) =>
-		{
-			console.log('API Response : ', response.json());
-			if(response.json().success){
-				console.log('Token : ', response.json().token);
-				this.storage.set('cpf', data.cpf);
-				this.storage.set('password', data.password);
-				this.storage.set('name', response.json().nome);
-				this.storage.set('logged', true);
-				this.presentSuccessToast(response.json().nome);
-				this.storage.set(TOKEN_KEY,response.json().token).then(() => {
-					this.events.publish('login');
+		this.submitService.postSubmit('https://api.fundacaocefetminas.org.br/login', data).subscribe( res => {
+			console.log('API Response : ', res);
+			if(res.success){
+				this.saveCredentials(data,res).then( ()=> {
+					this.presentSuccessToast(res.nome);
 					this.authenticationState.next(true);
+					this.events.publish('login');
 					this.router.navigateByUrl('/menu/tabs');
 				});
 			}
 			else{
 				this.presentFailedToast();
 			}
-		})
-		.catch((error) =>
-		{
-			console.error('API Error : ', error.status);
-			console.error('API Error : ', JSON.stringify(error));
-			this.presentErrorToast();
-		});
+		}, error =>{
+				console.error('API Error : ', error.status);
+				console.error('API Error : ', JSON.stringify(error));
+				this.presentErrorToast();
+			});
   }
 
 	logout() {

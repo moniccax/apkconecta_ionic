@@ -95,7 +95,7 @@ export class ProfilePage implements OnInit {
 			cpf: "",
 			email: ""
 		};
-		this.updateProfilePic();
+		this.updateProfileInfo();
 	}
 
 	async presentToast(message,color) {
@@ -117,51 +117,20 @@ export class ProfilePage implements OnInit {
 		this.storage.get('token').then((val) => {
 			data.token= val;
 			console.log(data);
-			this.formService.formSubmit('https://api.fundacaocefetminas.org.br/updatePassword',data).then(
-				(response) =>{
-					this.presentToast(response,"success");
-				},(error) =>{
-						this.presentToast(error.message,"danger");
-				});
-		});
-	}
-
-	changePasswordSubmit(data){
-		let headers = new Headers(
-		{
-			'Content-Type' : 'application/json'
-		});
-		let options = new RequestOptions({ headers: headers });
-		this.http.post('https://api.fundacaocefetminas.org.br/updatePassword', data, options)
-		.toPromise()
-		.then((response) =>
-		{
-			console.log('API Response : ', response.json());
-			if(response.json().logged){
-				if(response.json().success){
-					this.presentToast("Senha alterada com sucesso", "success");
+			this.formService.postSubmit('https://api.fundacaocefetminas.org.br/updatePassword',data).subscribe(
+				data => {
+					if(data['success']==true){
+						this.storage.set('password', this.changePassword.value.newPassword);
+						this.presentToast(data['message'],"success");
+					}
+					else{
+						this.presentToast(data['message'],"danger");
+					}
+				},
+				error =>{
+					this.presentToast(error.message,"danger");
 				}
-				else{
-					this.presentToast(response.json().message, "danger");
-				}
-			}
-			else{
-				this.authService.reload_token().then(res => {
-					this.storage.get('token').then((val) => {
-						data.token= val;
-						this.changePasswordSubmit(data);
-					});
-				}).catch((error) =>
-				{
-					this.authService.logout();
-				});
-			}
-		})
-		.catch((error) =>
-		{
-			console.error('API Error : ', error.status);
-			console.error('API Error : ', JSON.stringify(error));
-			this.presentToast("Erro ao alterar a senha!", "danger");
+			);
 		});
 	}
 
@@ -182,13 +151,13 @@ export class ProfilePage implements OnInit {
 	}
 
 	startUpload(imgEntry) {
-	    this.file.resolveLocalFilesystemUrl(imgEntry)
-	        .then(entry => {
-	            ( < FileEntry > entry).file(file => this.readFile(file))
-	        })
-	        .catch(err => {
-	            this.presentToast('Error while reading file.', 'danger');
-	        });
+    this.file.resolveLocalFilesystemUrl(imgEntry)
+        .then(entry => {
+            ( < FileEntry > entry).file(file => this.readFile(file))
+        })
+        .catch(err => {
+            this.presentToast('Error while reading file.', 'danger');
+        });
 	}
 
 	readFile(file: any) {
@@ -213,14 +182,31 @@ export class ProfilePage implements OnInit {
 		});
 		await loading.present();
 
-		this.http.post("https://api.fundacaocefetminas.org.br/updateProfilePic", formData)
+		this.formService.imageSubmit('https://api.fundacaocefetminas.org.br/updateProfilePic', formData)
+		.subscribe( data => {
+			loading.dismiss();
+			console.log('API Response : ', data);
+			if(data['success']){
+				this.presentToast('Foto de perfil atualizada com sucesso','success')
+				this.updateProfileInfo();
+			}
+			else{
+				this.presentToast('Falha no servidor ao atualizar a foto de perfil.','danger')
+			}
+		}, error=>{
+			loading.dismiss();
+			console.error('API Error : ', error);
+			this.presentToast('Falha ao atualizar a foto de perfil','danger')
+		});
+
+		/*this.http.post("https://api.fundacaocefetminas.org.br/updateProfilePic", formData)
 			.toPromise()
 			.then((response) => {
 				loading.dismiss();
 				console.log('API Response : ', response.json());
 				if(response.json().success){
 					this.presentToast('File upload complete.','success')
-					this.updateProfilePic();
+					this.updateProfileInfo();
 				}
 				else{
 					this.presentToast('File upload failed on server.','danger')
@@ -231,50 +217,29 @@ export class ProfilePage implements OnInit {
 				console.error('API Error : ', error.status);
 				console.error('API Error : ', JSON.stringify(error));
 				this.presentToast('File upload failed.','danger')
-			});
+			});*/
 	}
-
-	async updateProfilePic(){
+	updateProfileInfo(){
 		this.storage.get('token').then(token => {
 			if (token) {
 				let data = { 'token': token };
-				console.log(data)
-				let headers = new Headers(
-					{
-						'Content-Type': 'application/json'
-					});
-				let options = new RequestOptions({ headers: headers });
-				this.http.post('https://api.fundacaocefetminas.org.br/getProfileInfo', data, options)
-				.toPromise()
-				.then((response) =>{
-					console.log(response.json());
-					if(response.json().success==true){
-						this.profile.name=response.json().name;
-						this.editProfileForm.controls['name'].setValue(this.profile.name);
-						this.profile.cpf=response.json().cpf;
-						this.editProfileForm.controls['cpf'].setValue(this.profile.cpf);
-						this.profile.email=response.json().email;
-						this.editProfileForm.controls['email'].setValue(this.profile.email);
-						this.profile.profilepicpath=response.json().profilepicpath+"?"+new Date().getTime();
-						this.load=true;
-						this.changeRef.detectChanges();
-					}
-					else{
-						this.authService.reload_token().then(res => {
-							this.updateProfilePic();
-						}).catch((error) =>
-						{
-							this.authService.logout();
-						});
-
-					}
-				})
-				.catch((error) =>
-				{
-					console.error('API Error : ', error.status);
-					console.error('API Error : ', JSON.stringify(error));
-				});
+				this.formService.postSubmit('https://api.fundacaocefetminas.org.br/getProfileInfo', data)
+				.subscribe( data => {
+					this.updateScreen(data);
+		    });
 			}
-		})
+		});
+	}
+
+	updateScreen(data){
+		this.profile.name=data.name;
+		this.editProfileForm.controls['name'].setValue(this.profile.name);
+		this.profile.cpf=data.cpf;
+		this.editProfileForm.controls['cpf'].setValue(this.profile.cpf);
+		this.profile.email=data.email;
+		this.editProfileForm.controls['email'].setValue(this.profile.email);
+		this.profile.profilepicpath=data.profilepicpath+"?"+new Date().getTime();
+		this.load=true;
+		this.changeRef.detectChanges();
 	}
 }

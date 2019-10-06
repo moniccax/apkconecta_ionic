@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edição de comentário</ion-title>
+		<ion-buttons slot="end">
+			<ion-button (click)="closeModal()" class="ios button button-clear ion-activatable ion-focusable hydrated">
+				<ion-icon name="close"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<form [formGroup]="editCommentForm" #form="ngForm" (ngSubmit)="submitEditComment(form)">
+	<ion-card *ngIf="comment">
+		<ion-card-header class="ion-no-padding">
+			<ion-item lines="none">
+				<ion-avatar slot="start">
+					<ion-img src="https://api.fundacaocefetminas.org.br{{comment.author_profilepic}}"></ion-img>
+				</ion-avatar>
+				<ion-label>
+					<p>{{comment.author}}</p>
+					<p>{{comment.date}}</p>
+				</ion-label>
+			</ion-item>
+		</ion-card-header>
+		<ion-card-content>
+			<ion-item>
+	      <ion-input formControlName="comment_text" name="comment_text" type="text" value="{{comment.text}}"></ion-input>
+	    </ion-item>
+		</ion-card-content>
+	</ion-card>
+	<div padding>
+		<ion-button type="submit" [disabled]="!editCommentForm.valid" expand="block"> Atualizar <ion-icon slot="end" name="arrow-round-forward"></ion-icon> </ion-button>
+	</div>
+	</form>
+</ion-content>

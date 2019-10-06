@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-img cache="true" src="/assets/images/logo_fcm.png" height="5px" width="5px" class="logo-position"></ion-img>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-card *ngIf="post">
+		<ion-card-header class="ion-no-padding">
+			<ion-item lines="none">
+				<ion-avatar slot="start">
+					<ion-img src="https://api.fundacaocefetminas.org.br{{post.author_profilepic}}"></ion-img>
+				</ion-avatar>
+				<ion-label>
+					<p>{{post.author.split(' ')[0]}} {{post.author.split(' ')[post.author.split(' ').length-1]}}</p>
+					<p>
+						{{post.date}}
+					</p>
+				</ion-label>
+				<ion-icon *ngIf="post.visibility==1 || post.visibility==2" name="eye-off" class="ion-margin-end">
+				</ion-icon>
+				<ion-icon *ngIf="post.visibility==3" name="eye" class="ion-margin-end"></ion-icon>
+				<ion-badge *ngFor="let ctx of post.contexts" [ngStyle]="{'background':ctx.color}">{{ctx.name[0]}}
+				</ion-badge>
+			</ion-item>
+		</ion-card-header>
+		<ion-card-content class="ion-no-padding">
+			<!-- Post com 1 imagem -->
+			<ion-img *ngIf="post.images.length==1" cache="true" src="https://api.fundacaocefetminas.org.br/{{post.images[0]}}"></ion-img>
+			<!-- Post com 2 ou mais imagens -->
+			<ion-slides *ngIf="post.images.length>1" pager="true" [options]="sliderConfig" style="min-height: 150px">
+				<ion-slide *ngFor="let img of post.images">
+					<ion-img cache="true" src="https://api.fundacaocefetminas.org.br/{{img}}"></ion-img>
+				</ion-slide>
+			</ion-slides>
+			<ion-card-title class="title-padding">{{post.title}}</ion-card-title>
+			<div class="text-padding">
+				{{post.text}}
+			</div>
+			<ion-card-title class="title-padding">Comentários:</ion-card-title>
+			<div (click)="handleClick($event)" [innerHTML]="comments"></div>
+			<form [formGroup]="addCommentForm" #form="ngForm" (ngSubmit)="submitAddComment(form)">
+				<ion-item padding>
+		      <ion-label position="floating">Escreva um comentário:</ion-label>
+		      <ion-textarea padding formControlName="comment_text" name="comment_text"></ion-textarea>
+				</ion-item>
+				<div padding>
+					<ion-button type="submit" [disabled]="!addCommentForm.valid" expand="block"> Enviar <ion-icon slot="end" name="arrow-round-forward"></ion-icon> </ion-button>
+				</div>
+			</form>
+		</ion-card-content>
+	</ion-card>
+</ion-content>

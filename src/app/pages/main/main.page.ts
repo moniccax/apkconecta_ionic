@@ -38,8 +38,6 @@ export class MainPage implements OnInit {
 		});
 	}
 
-
-
 	public login() {
 		let data ={'cpf': this.loginForm.value.cpf, 'password': this.loginForm.value.password};
 		this.authService.login(data);
@@ -50,10 +48,12 @@ export class MainPage implements OnInit {
 				message: 'Carregando...',
 		});
 		await loading.present();
-		this.authService.checkToken().then(res => {
+		this.authService.reload_token().then(res => {
 			loading.dismiss();
+			this.router.navigateByUrl('/menu/tabs');
 		}).catch((error) =>
 		{
+			console.log("Error")
 			loading.dismiss();
 		});
 	}

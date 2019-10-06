@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { AuthenticationService } from './authentication.service';
+import { SubmitService } from './submit.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class FormsubmitService {
 
-  constructor(public http: Http,
-		private storage: Storage,
-		private authService: AuthenticationService) {
+	constructor(private storage: Storage,
+		private authService: AuthenticationService,
+		private submitService: SubmitService) {
+	}
 
-		}
-
-	formSubmit(url,data){
-		return new Promise((resolve, reject) => {
+	formSubmit(url, data) {
+		/*return new Promise((resolve, reject) => {
 			let headers = new Headers({
 				'Content-Type' : 'application/json'
 			});
@@ -47,6 +47,50 @@ export class FormsubmitService {
 				console.error('API Error : ', error.status);
 				console.error('API Error : ', JSON.stringify(error));
 				reject(new Error("Erro ao submeter formulário!"));
+			});
+		});*/
+	}
+
+	postSubmit(url, data) {
+		return new Observable((observer) => {
+			this.submitService.postSubmit(url, data).subscribe(res => {
+				observer.next(res);
+			}, error => {
+				if (error.status == 403) {
+					this.authService.reload_token().then(res => {
+						data.token = res;
+						this.submitService.postSubmit(url, data).subscribe(res => {
+							observer.next(res);
+						}, error => {
+							this.authService.logout();
+						});
+					}).catch((error) => {
+						this.authService.logout();
+					});
+				}
+			});
+		});
+	}
+
+	imageSubmit(url, data) {
+		return new Observable((observer) => {
+			this.submitService.imageSubmit(url, data).subscribe(res => {
+				observer.next(res);
+			}, error => {
+				if (error.status == 403) {
+					this.authService.reload_token().then(res => {
+						data.set('token', res);
+						this.submitService.imageSubmit(url, data).subscribe(res => {
+							observer.next(res);
+						}, error => {
+							this.authService.logout();
+							observer.error()
+						});
+					}).catch((error) => {
+						this.authService.logout();
+						observer.error()
+					});
+				}
 			});
 		});
 	}

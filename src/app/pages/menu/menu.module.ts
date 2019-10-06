@@ -31,6 +31,10 @@ const routes: Routes = [
 				canActivate: [AuthGuard],
         loadChildren: '../posts/posts.module#PostsPageModule'
       },
+		  { path: 'posts/:id',
+				canActivate: [AuthGuard],
+				loadChildren: '../postdetails/postdetails.module#PostdetailsPageModule'
+			},
 			{
         path: 'tabs',
 				canActivate: [AuthGuard],
