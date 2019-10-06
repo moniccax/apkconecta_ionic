@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthenticationService } from './../../services/authentication.service';
+import { FormsubmitService } from './../../services/formsubmit.service';
 
 @Component({
   selector: 'app-modal-add-post',
@@ -21,13 +22,14 @@ export class ModalAddPostPage implements OnInit {
     private storage: Storage,
     private http: Http,
     private modalController: ModalController,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private formService: FormsubmitService
   ) {
     this.addPostForm = this.formBuilder.group({
       post_images: new FormControl(),
-      post_title: new FormControl('', Validators.compose([Validators.required])),
+      post_title: new FormControl(),
       post_text: new FormControl(),
-      post_visibility: new FormControl('', Validators.compose([Validators.required]))
+      post_visibility: new FormControl()
     });
   }
 
@@ -68,6 +70,10 @@ export class ModalAddPostPage implements OnInit {
           .then((response) => {
             if (response.json().success) {
               this.contexts = response.json().contexts;
+              for (let i = 0; i < this.contexts.length; i++) {
+                let ctx = this.contexts[i].name;
+                this.addPostForm.addControl('post_ctx_' + ctx, new FormControl());
+              }
             } else {
               console.log("Fail");
             }
@@ -77,8 +83,27 @@ export class ModalAddPostPage implements OnInit {
   }
 
   submitAddPost() {
-    let data = { 'post_images': this.addPostForm.getRawValue().post_images, 'post_title': this.addPostForm.getRawValue().post_title, 'post_text': this.addPostForm.getRawValue().post_text, 'post_visibility': this.addPostForm.getRawValue().post_visibility };
-    console.log(data);
+    this.storage.get('token').then(token => {
+      if (token) {
+        let data = this.addPostForm.getRawValue();
+        data.token= token;
+        console.log(data);
+        let headers = new Headers(
+          {
+            'Content-Type': 'application/json'
+          });
+        let options = new RequestOptions({ headers: headers });
+        this.http.post('https://api.fundacaocefetminas.org.br/addPost', data, options)
+          .toPromise()
+          .then((response) => {
+            if (response.json().success) {
+              console.log("Success");
+            } else {
+              console.log("Fail");
+            }
+          })
+      }
+    })
   }
 
 }
