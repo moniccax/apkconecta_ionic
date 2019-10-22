@@ -57,20 +57,20 @@ export class MenuPage implements OnInit {
 
 	logged_pages = [
 		{
+			title: 'Página inicial',
+			url: '/menu/posts',
+			external: false,
+			icon: 'home'
+		},
+		{
 			title: 'Perfil',
 			url: '/menu/profile',
 			external: false,
 			icon: 'person'
 		},
 		{
-			title: 'Notificações',
-			url: '/menu/tabs',
-			external: false,
-			icon: 'notifications'
-		},
-		{
-			title: 'Configurações',
-			url: '/menu/posts',
+			title: 'Contextos',
+			url: '/menu/context-list',
 			external: false,
 			icon: 'settings'
 		},

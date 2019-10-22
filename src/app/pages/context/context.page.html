@@ -1,0 +1,15 @@
+<ion-header *ngIf="context">
+  <ion-toolbar>
+    <ion-title>{{context.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="context">
+	<ion-title>Membros</ion-title>
+	<ion-chip *ngFor="let member of context.members">
+	  <ion-avatar>
+	    <img src="https://api.fundacaocefetminas.org.br/{{member.profilepicpath}}">
+	  </ion-avatar>
+	  <ion-label>{{member.name}}</ion-label>
+	</ion-chip>
+</ion-content>

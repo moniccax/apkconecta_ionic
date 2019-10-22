@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Contextos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-list *ngIf="contexts">
+	<ion-item *ngFor="let ctx of contexts" [routerLink]="['/', 'menu', 'context', ctx.id]">
+		<ion-button href="#" class="context-button" [ngStyle]="{'background':ctx.color}">
+			{{ctx.name[0]}}
+		</ion-button>
+		<ion-label>
+			{{ctx.name}}
+		</ion-label>
+	</ion-item>
+</ion-list>
+</ion-content>

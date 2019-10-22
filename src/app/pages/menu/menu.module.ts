@@ -26,6 +26,16 @@ const routes: Routes = [
 				canActivate: [AuthGuard],
         loadChildren: '../profile/profile.module#ProfilePageModule'
       },
+		  {
+				path: 'context-list',
+				canActivate: [AuthGuard],
+				loadChildren: '../context-list/context-list.module#ContextListPageModule'
+			},
+			{
+				path: 'context/:id',
+				canActivate: [AuthGuard],
+				loadChildren: '../context/context.module#ContextPageModule'
+			},
 			{
         path: 'posts',
 				canActivate: [AuthGuard],
